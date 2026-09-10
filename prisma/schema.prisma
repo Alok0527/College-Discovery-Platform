@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reviews   Review[]
+}
+
+model College {
+  id                 String   @id @default(cuid())
+  name               String
+  slug               String   @unique
+  city               String
+  state              String
+  location           String
+  fees               Int
+  rating             Float
+  overview           String
+  placementAverage   Float?
+  placementHighest   Float?
+  imageUrl           String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  courses  Course[]
+  reviews  Review[]
+  cutoffs  Cutoff[]
+
+  @@index([name])
+  @@index([city])
+  @@index([state])
+  @@index([fees])
+  @@index([rating])
+}
+
+model Course {
+  id        String   @id @default(cuid())
+  collegeId String
+  name      String
+  duration  Int
+  createdAt DateTime @default(now())
+
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+  @@index([name])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  collegeId String
+  userId    String?
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  college College? @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([collegeId])
+}
+
+model Cutoff {
+  id          String   @id @default(cuid())
+  collegeId   String
+  exam        String
+  branch      String
+  category    String   @default("General")
+  homeState   String?
+  openingRank Int?
+  closingRank Int
+  year        Int      @default(2024)
+  createdAt   DateTime @default(now())
+
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@index([collegeId])
+  @@index([exam])
+  @@index([branch])
+  @@index([category])
+  @@index([year])
+  @@index([closingRank])
+}
