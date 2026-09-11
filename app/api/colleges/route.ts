@@ -142,9 +142,11 @@ export async function GET(request: NextRequest) {
 
     const totalPages = Math.ceil(totalResults / limit)
 
-    const formattedColleges = colleges.map((college) => ({
+    const formattedColleges = colleges.map((college: Record<string, unknown>) => ({
       ...college,
-      courses: college.courses.map((c) => c.name),
+      courses: (college.courses as Record<string, unknown>[]).map(
+        (c: Record<string, unknown>) => c.name as string
+      ),
     }))
 
     const response: ApiResponse<PaginatedResponse<College>> = {

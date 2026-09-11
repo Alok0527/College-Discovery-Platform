@@ -99,6 +99,7 @@ export interface ApiResponse<T> {
 export interface CompareCollege {
   id: string
   name: string
+  slug?: string
   city: string
   state: string
   fees: number

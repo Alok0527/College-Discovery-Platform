@@ -17,8 +17,10 @@ export async function GET(
       return NextResponse.json(response, { status: 400 })
     }
 
-    const college = await prisma.college.findUnique({
-      where: { id },
+    const college = await prisma.college.findFirst({
+      where: {
+        OR: [{ id }, { slug: id }],
+      },
       include: {
         courses: true,
         reviews: {

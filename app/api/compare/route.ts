@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (colleges.length !== uniqueIds.length) {
-      const foundIds = colleges.map((c) => c.id)
+      const foundIds = colleges.map((c: { id: string }) => c.id)
       const missingIds = uniqueIds.filter((id) => !foundIds.includes(id))
       const response: ApiResponse<null> = {
         success: false,
@@ -61,17 +61,31 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(response, { status: 400 })
     }
 
-    const compareData: CompareCollege[] = colleges.map((college) => ({
-      id: college.id,
-      name: college.name,
-      city: college.city,
-      state: college.state,
-      fees: college.fees,
-      rating: college.rating,
-      placementAverage: college.placementAverage,
-      placementHighest: college.placementHighest,
-      courses: college.courses.map((c) => c.name),
-    }))
+    const compareData: CompareCollege[] = colleges.map(
+      (college: {
+        id: string;
+        name: string;
+        slug: string;
+        city: string;
+        state: string;
+        fees: number;
+        rating: number;
+        placementAverage: number | null;
+        placementHighest: number | null;
+        courses: { name: string }[];
+      }) => ({
+        id: college.id,
+        name: college.name,
+        slug: college.slug,
+        city: college.city,
+        state: college.state,
+        fees: college.fees,
+        rating: college.rating,
+        placementAverage: college.placementAverage,
+        placementHighest: college.placementHighest,
+        courses: college.courses.map((c) => c.name),
+      })
+    )
 
     const response: ApiResponse<CompareCollege[]> = {
       success: true,
