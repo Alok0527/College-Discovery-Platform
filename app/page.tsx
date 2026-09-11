@@ -1,6 +1,8 @@
 import Link from "next/link";
 import FeaturedSection from "./featured-section";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center">
