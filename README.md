@@ -38,7 +38,7 @@ npx prisma migrate dev --name init
 npx prisma db seed
 npm run dev
 
-Open http://localhost:3000.
+//Open http://localhost:3000.//
 
 Routes
 
